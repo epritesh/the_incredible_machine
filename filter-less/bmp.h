@@ -2,13 +2,13 @@
 
 #include <stdint.h>
 
-// These data types are essentially aliases for C/C++ primitive data types. 
+// These data types are essentially aliases for C/C++ primitive data types.
 // Adapted from http://msdn.microsoft.com/en-us/library/cc230309.aspx.
 // See https://en.wikipedia.org/wiki/C_data_types#stdint.h for more on stdint.h.
 
 typedef uint8_t  BYTE;
 typedef uint32_t DWORD;
-typedef int32_t  LONG;
+typedef int32_t  LONG; 
 typedef uint16_t WORD;
 
 // The BITMAPFILEHEADER structure contains information about the type, size,
