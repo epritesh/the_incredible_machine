@@ -41,8 +41,8 @@ int main(int argc, char *argv[])
     // TODO: Read samples from input file and write updated data to output file
     int16_t buffer;
     fread(&buffer,2,1,input);
-    buffer *= factor
-    fwrite()
+    buffer *= factor;
+    fwrite(b)
 
 
     // Close files
