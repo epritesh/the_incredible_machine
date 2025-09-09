@@ -1,0 +1,11 @@
+sort1 uses: bubble
+
+How do you know?: Sort1 has very fast run time for very large sorted list.
+
+sort2 uses: merge
+
+How do you know?: Sort2 has fastest run time for very large list.
+
+sort3 uses: selection
+
+How do you know?: Sort3 was slower than Sort1 for a sorted list as expected.
