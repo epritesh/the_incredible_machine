@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     fwrite(header, 1, HEARDER_SIZE, output);
 
     // TODO: Read samples from input file and write updated data to output file
-    int16_t sample
+    int16_t sample;
     fwrite()
 
 
