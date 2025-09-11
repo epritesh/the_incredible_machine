@@ -1,9 +1,8 @@
-while True:
-    try:
-        if 1 <= (num := int(input("Height: "))) <= 8:
-            print(f"You entered: {num}")
-            break
-    except ValueError:
-        pass
+from cs50 import get_int
 
+while True:
+    num = get_int("Height: ")
+    if 1 <= num <= 8:
+        print(f"You entered: {num}")
+        break
 for (
