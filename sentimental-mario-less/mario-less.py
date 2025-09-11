@@ -1,6 +1,7 @@
-# Prompt the user for input and store it as an integer
-height = int(input("Height: "))
-
-while (height <=1 or height <= 9):
-    height = int(input("Height: "))
-print(height)
+while True:
+    try:
+        if 1 <= (num := int(input("Height: "))) <= 8:
+            print(f"You entered: {num}")
+            break
+    except ValueError:
+        pass
