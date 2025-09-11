@@ -1,14 +1,14 @@
 from cs50 import get_int
 
-#Repeatedly prompts for height until 1-8 enterred
+# Repeatedly prompts for height until 1-8 enterred
 while True:
     height = get_int("Height: ")
     if 1 <= height <= 8:
         break
 
 for i in range(height+1):
-        # Print spaces
-        print(" " * (height - i), end="")
+    # Print spaces
+    print(" " * (height - i), end="")
 
-        # Print hashes
-        print("#" * i)
+    # Print hashes
+    print("#" * i)
