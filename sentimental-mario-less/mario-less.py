@@ -1,8 +1,9 @@
 from cs50 import get_int
 
+#Repeatedly prompts for height until 1-8 enterred
 while True:
-    num = get_int("Height: ")
+    height = get_int("Height: ")
     if 1 <= num <= 8:
-        print(f"You entered: {num}")
         break
+
 for (
