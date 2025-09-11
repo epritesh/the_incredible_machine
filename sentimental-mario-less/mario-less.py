@@ -6,5 +6,9 @@ while True:
     if 1 <= height <= 8:
         break
 
-for i in range(1, height):
-    for j in range(height - i)
+  for i in range(1, height + 1):
+        # Print spaces
+        print(" " * (height - i), end="")
+
+        # Print hashes
+        print("#" * i)
