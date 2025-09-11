@@ -1,4 +1,4 @@
 # Prompt the user for input and store it as an integer
 height = int(input("Height: "))
 
-if (0<height<9 )
+if (1 <= height <9 )
