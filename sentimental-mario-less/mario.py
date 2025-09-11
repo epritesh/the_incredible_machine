@@ -11,4 +11,4 @@ for i in range(1, height):
     print(" " * (height - i), end="")
 
     # Print hashes
-    print("#" * i)
+    print("#" * i,end="")
