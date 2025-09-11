@@ -1,6 +1,6 @@
 # Prompt the user for input and store it as an integer
 height = int(input("Height: "))
 
-if (1 <= height  <= 9):
+while (height >=1 or height >= 9):
     height = int(input("Height: "))
-else
+print(height)
