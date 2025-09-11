@@ -6,4 +6,5 @@ while True:
     if 1 <= num <= 8:
         break
 
-for (
+for i in range(height):
+    for j in range(height)
