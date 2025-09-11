@@ -6,7 +6,7 @@ while True:
     if 1 <= height <= 8:
         break
 
-  for i in range(1, height + 1):
+for i in range(height):
         # Print spaces
         print(" " * (height - i), end="")
 
