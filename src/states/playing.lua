@@ -218,20 +218,24 @@ function Playing:draw()
     end
 
     -- no debug overlay in submission build
-    -- draw a cheap vignette overlay (edge fade) using semi-transparent rectangles
+    -- draw a stronger but still cheap vignette overlay using semi-transparent rectangles
     local w, h = love.graphics.getWidth(), love.graphics.getHeight()
-    local vignetteMaxAlpha = 0.45
-    local steps = 6
+    local vignetteMaxAlpha = 0.9
+    local steps = 14
+    -- alpha multiplier per rectangle (tuned for visible but not overpowering effect)
+    local alphaMul = 0.22
     for i = 1, steps do
-        local a = vignetteMaxAlpha * (i / steps) ^ 1.4
+        -- softer falloff (power >1 gives softer center, stronger edge)
+        local t = (i / steps)
+        local a = vignetteMaxAlpha * (t ^ 1.6) * alphaMul
         local inset = i * 8
-        love.graphics.setColor(0, 0, 0, a * 0.12)
+        love.graphics.setColor(0, 0, 0, a)
         -- top
-        love.graphics.rectangle("fill", inset, inset - inset, w - inset * 2, inset)
+        love.graphics.rectangle("fill", inset, 0, w - inset * 2, inset)
         -- bottom
         love.graphics.rectangle("fill", inset, h - inset, w - inset * 2, inset)
         -- left
-        love.graphics.rectangle("fill", inset - inset, inset, inset, h - inset * 2)
+        love.graphics.rectangle("fill", 0, inset, inset, h - inset * 2)
         -- right
         love.graphics.rectangle("fill", w - inset, inset, inset, h - inset * 2)
     end
