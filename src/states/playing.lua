@@ -218,22 +218,21 @@ function Playing:draw()
     end
 
     -- no debug overlay in submission build
-    -- draw a cheap vignette overlay (edge fade) using semi-transparent rectangles
+    -- draw a radial vignette (concentric circles) centered on the screen
     local w, h = love.graphics.getWidth(), love.graphics.getHeight()
-    local vignetteMaxAlpha = 0.45
-    local steps = 6
-    for i = 1, steps do
-        local a = vignetteMaxAlpha * (i / steps) ^ 1.4
-        local inset = i * 8
-        love.graphics.setColor(0, 0, 0, a * 0.12)
-        -- top
-        love.graphics.rectangle("fill", inset, inset - inset, w - inset * 2, inset)
-        -- bottom
-        love.graphics.rectangle("fill", inset, h - inset, w - inset * 2, inset)
-        -- left
-        love.graphics.rectangle("fill", inset - inset, inset, inset, h - inset * 2)
-        -- right
-        love.graphics.rectangle("fill", w - inset, inset, inset, h - inset * 2)
+    local cx, cy = w / 2, h / 2
+    local maxR = math.sqrt(cx*cx + cy*cy)
+    local steps = 48
+    local maxAlpha = 0.6
+    for i = steps, 1, -1 do
+        local t = i / steps
+        -- stronger near the edges: use an eased curve
+        local a = maxAlpha * (1 - (t ^ 1.8))
+        -- radius from center
+        local r = t * maxR
+        love.graphics.setColor(0, 0, 0, a)
+        -- draw a filled circle for the ring (slightly smaller inner circle covered by next iteration)
+        love.graphics.circle("fill", cx, cy, r)
     end
     love.graphics.setColor(1,1,1)
     -- cursor ghost (selected item preview)
