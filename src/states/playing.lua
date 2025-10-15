@@ -30,15 +30,8 @@ function Playing:load(levelPath)
     local levelData = love.filesystem.load(self.levelPath)()
 
     self:loadObjects(levelData.objects)
-    self.goal = Goal:new(levelData.goal)
-
-    -- preload a small icon for the goal if an asset exists
-    self.goalIcon = nil
-    if self.goal.targetType == "balloon" and love.filesystem.getInfo("assets/sprites/balloon.png") then
-        self.goalIcon = love.graphics.newImage("assets/sprites/balloon.png")
-    elseif self.goal.targetType == "ball" and love.filesystem.getInfo("assets/sprites/ball.png") then
-        self.goalIcon = love.graphics.newImage("assets/sprites/ball.png")
-    end
+        -- Keep goal data for logic (target type) but do not draw a positional goal anymore
+        self.goal = Goal:new(levelData.goal)
 end
 
 function Playing:loadObjects(objectsData)
@@ -75,34 +68,7 @@ end
 
 function Playing:draw()
     love.graphics.setFont(self.defaultFont)
-    self.goal:draw()
-
-    -- Draw a highlighted outline and label for the goal to make it obvious
-    local gx, gy = self.goal.x, self.goal.y
-    local gw, gh = self.goal.width or 64, self.goal.height or 64
-    love.graphics.setLineWidth(3)
-    love.graphics.setColor(1, 0.6, 0, 0.95)
-    love.graphics.rectangle("line", gx - gw/2 - 8, gy - gh/2 - 8, gw + 16, gh + 16)
-
-    -- Draw an icon above the goal if available
-    if self.goalIcon then
-        local icon = self.goalIcon
-        love.graphics.setColor(1,1,1)
-        love.graphics.draw(icon, gx, gy - gh/2 - (icon:getHeight()/2) - 8, 0, 1, 1, icon:getWidth()/2, icon:getHeight()/2)
-    end
-
-    -- Descriptive label near the goal
-    local label = "GOAL: "
-    if self.goal.targetType == "balloon" then
-        label = label .. "Pop the balloon"
-    elseif self.goal.targetType == "ball" then
-        label = label .. "Bring the ball here"
-    else
-        label = label .. tostring(self.goal.targetType)
-    end
-    love.graphics.setFont(self.defaultFont)
-    love.graphics.setColor(1,1,1)
-    love.graphics.printf(label, gx - 200, gy - gh/2 - 40, 400, "center")
+        -- No positional goal is drawn anymore. Goal only used for logic (e.g. balloon target)
 
     for _, obj in ipairs(self.objects) do
         if obj.draw then obj:draw() end
