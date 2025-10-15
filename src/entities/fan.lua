@@ -35,23 +35,26 @@ function Fan:resetBody()
 end
 
 function Fan:update(dt, objects)
-    local anyPressed = false
-    if self.channel then
-        for _, o in ipairs(objects) do
-            if o.type == "button" and o.pressed and o.channel == self.channel then
-                anyPressed = true
-                break
-            end
-        end
-    else -- Default behavior if no channel is set
-        for _, o in ipairs(objects) do
-            if o.type == "button" and o.pressed then
-                anyPressed = true
-                break
+    -- Activate if any Ball (dynamic body with user data type 'ball') is within the fan's radius
+    local px, py = self.body:getPosition()
+    local r = self.radius
+    local bodiesInArea = physics.world:queryAABB(px - r, py - r, px + r, py + r)
+    local anyBall = false
+    for _, body in ipairs(bodiesInArea) do
+        if body:getType() == "dynamic" then
+            local user = body:getUserData()
+            if user and user.type == "ball" then
+                -- ensure within circular radius
+                local bx, by = body:getPosition()
+                local dx, dy = bx - px, by - py
+                if (dx*dx + dy*dy) <= r*r then
+                    anyBall = true
+                    break
+                end
             end
         end
     end
-    self.active = anyPressed
+    self.active = anyBall
 
     if self.active then
         -- More efficient physics query!

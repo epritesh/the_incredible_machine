@@ -1,7 +1,6 @@
 local physics = require("src.core.physics")
 local Ball = require("src.entities.ball")
 local Fan = require("src.entities.fan")
-local Button = require("src.entities.button")
 local Balloon = require("src.entities.balloon")
 local Scissors = require("src.entities.scissors")
 local Goal = require("src.entities.goal")
@@ -12,7 +11,6 @@ local Playing = {}
 local entityTypes = {
     ball = Ball,
     fan = Fan,
-    button = Button,
     balloon = Balloon,
     scissors = Scissors,
 }
@@ -71,7 +69,7 @@ function Playing:draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 10, 10)
-    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Button, 4=Balloon, 5=Scissors] (Drag to move, R to rotate)", 10, 30)
+    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Balloon, 4=Scissors] (Drag to move, R to rotate)", 10, 30)
     love.graphics.print("Level: " .. self.levelPath .. "  [ESC to menu]", 10, 50)
 
     if self.selectedObj and self.mode == "edit" then
@@ -105,9 +103,8 @@ function Playing:keypressed(key)
         end
     elseif key == "1" then self.selectedType = "ball"
     elseif key == "2" then self.selectedType = "fan"
-    elseif key == "3" then self.selectedType = "button"
-    elseif key == "4" then self.selectedType = "balloon"
-    elseif key == "5" then self.selectedType = "scissors"
+    elseif key == "3" then self.selectedType = "balloon"
+    elseif key == "4" then self.selectedType = "scissors"
 
     elseif key == "r" and self.selectedObj then
         self.selectedObj.angle = (self.selectedObj.angle or 0) + math.pi / 4
@@ -128,13 +125,11 @@ function Playing:mousepressed(x, y, button)
             end
         end
 
-        local data = { x = x, y = y, channel = nil }
+        local data = { x = x, y = y }
         if self.selectedType == "ball" then
             table.insert(self.objects, Ball:new(data))
         elseif self.selectedType == "fan" then
             table.insert(self.objects, Fan:new(data))
-        elseif self.selectedType == "button" then
-            table.insert(self.objects, Button:new(data))
         elseif self.selectedType == "balloon" then
             table.insert(self.objects, Balloon:new(data))
         elseif self.selectedType == "scissors" then
