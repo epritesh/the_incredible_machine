@@ -126,11 +126,12 @@ function Playing:draw()
         local w = font:getWidth(text)
         local h = font:getHeight()
         local x = (love.graphics.getWidth() - w) / 2
-        -- compute a safe Y that sits below the HUD lines so the HUD is not occluded
-        local hudLines = 2
-        local hudSpacing = 6
-        local hudHeight = (self.defaultFont:getHeight() * hudLines) + hudSpacing
-        local y = hudHeight + 8
+    -- compute a safe Y that sits below the HUD lines so the HUD is not occluded
+    local hudLines = 2
+    local hudSpacing = 6
+    local hudHeight = (self.defaultFont:getHeight() * hudLines) + hudSpacing
+    -- Use a slightly larger offset so the objective (which uses a bigger font) can't overlap the HUD
+    local y = hudHeight + 12
         -- solid dark background for maximum contrast
         love.graphics.setColor(0, 0, 0, 0.9)
         love.graphics.rectangle("fill", x - 12, y - 6, w + 24, h + 12, 6, 6)
