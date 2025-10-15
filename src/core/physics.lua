@@ -15,7 +15,7 @@ function physics.beginContact(f1, f2, contact)
     local a = f1 and f1:getUserData() or nil
     local b = f2 and f2:getUserData() or nil
     -- record contact point for debug overlay (if available)
-    if physics.debug and physics.debug.enabled and contact and contact:getPositions then
+    if physics.debug and physics.debug.enabled and contact and contact.getPositions then
         local x1,y1,x2,y2 = contact:getPositions()
         local x,y = x1 or x2, y1 or y2
         if x and y then
