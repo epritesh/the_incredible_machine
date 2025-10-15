@@ -96,22 +96,7 @@ function Playing:draw()
     love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 10, 10)
     love.graphics.print("Selected: " .. self.selectedType .. "  [1=Energy Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 10, 30)
 
-    -- On-screen objective for balloon-goal levels
-    if self.goal and self.goal.targetType == "balloon" then
-        local text = "Objective: Pop the balloon to win!"
-        local font = self.objectiveFont or self.defaultFont
-        love.graphics.setFont(font)
-        local w = font:getWidth(text)
-        local h = font:getHeight()
-        local x = (love.graphics.getWidth() - w) / 2
-        local y = 60
-        -- dark translucent background for readability
-        love.graphics.setColor(0, 0, 0, 0.6)
-        love.graphics.rectangle("fill", x - 8, y - 4, w + 16, h + 8, 6, 6)
-        love.graphics.setColor(1, 0.9, 0.2)
-        love.graphics.print(text, x, y)
-        love.graphics.setColor(1, 1, 1)
-    end
+    -- (Objective drawing moved later to ensure it's not occluded by game objects)
 
     if self.selectedObj and self.mode == "edit" then
         love.graphics.setColor(0, 1, 0, 0.5)
@@ -125,6 +110,23 @@ function Playing:draw()
         love.graphics.printf("You Win!", 0, 300, love.graphics.getWidth(), "center")
         love.graphics.setFont(self.defaultFont)
         love.graphics.printf("Press Enter to continue", 0, 400, love.graphics.getWidth(), "center")
+    end
+
+    -- Draw objective last so it is always visible
+    if self.goal and self.goal.targetType == "balloon" then
+        local text = "POP THE BALLOON TO WIN!"
+        local font = self.objectiveFont or self.defaultFont
+        love.graphics.setFont(font)
+        local w = font:getWidth(text)
+        local h = font:getHeight()
+        local x = (love.graphics.getWidth() - w) / 2
+        local y = 16
+        -- solid dark background for maximum contrast
+        love.graphics.setColor(0, 0, 0, 0.9)
+        love.graphics.rectangle("fill", x - 12, y - 6, w + 24, h + 12, 6, 6)
+        love.graphics.setColor(1, 0.2, 0.2)
+        love.graphics.print(text, x, y)
+        love.graphics.setColor(1, 1, 1)
     end
 end
 
