@@ -91,7 +91,8 @@ end
 
 function Playing:keypressed(key)
     if self.win and (key == "return" or key == "kpenter") then
-        Gamestate.switch("level_select")
+        -- Return to main menu (single-level game)
+        Gamestate.switch("main_menu")
         return
     end
 
