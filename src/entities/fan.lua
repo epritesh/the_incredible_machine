@@ -8,7 +8,7 @@ local Fan = {
     height = 32,
     power = 1.0,
     active = false,
-    angle = -math.pi / 2, -- Default to upward
+    angle = 0, -- Default to East / positive X (right)
     radius = 220, -- Area of effect
     forceMagnitude = 2000 -- Base force strength (increased for visible effect)
 }
