@@ -10,7 +10,7 @@ local Fan = {
     active = false,
     angle = -math.pi / 2, -- Default to upward
     radius = 220, -- Area of effect
-    forceMagnitude = 60 -- Base force strength
+    forceMagnitude = 2000 -- Base force strength (increased for visible effect)
 }
 setmetatable(Fan, Base) -- Inherit from Base
 Fan.__index = Fan -- For method lookups
@@ -69,15 +69,18 @@ function Fan:draw()
     end
 
     love.graphics.setColor(1, 1, 1)
+    -- Draw at the physics body's position so visuals match interaction
+    local px, py = (self.body and self.body.getPosition) and self.body:getPosition() or (self.x or 0), (self.body and self.body.getY) and self.body:getY() or (self.y or 0)
+    local ang = (self.body and self.body.getAngle) and self.body:getAngle() or self.angle
     love.graphics.push()
-    love.graphics.translate(self.x, self.y)
-    love.graphics.rotate(self.angle)
+    love.graphics.translate(px, py)
+    love.graphics.rotate(ang)
     love.graphics.draw(sprite, -self.width/2, -self.height/2)
     love.graphics.pop()
 
     if self.active then
-        love.graphics.setColor(1, 1, 1, 0.15)
-        love.graphics.circle("fill", self.x, self.y, self.radius)
+        love.graphics.setColor(0.8, 0.9, 1, 0.12)
+        love.graphics.circle("fill", px, py, self.radius)
     end
 end
 
