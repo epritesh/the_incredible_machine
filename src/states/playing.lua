@@ -113,6 +113,14 @@ function Playing:draw()
     love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Balloon, 4=Scissors] (Drag to move, R to rotate)", 10, 30)
     love.graphics.print("Level: " .. self.levelPath .. "  [ESC to menu]", 10, 50)
 
+    -- On-screen objective for balloon-goal levels
+    if self.goal and self.goal.targetType == "balloon" then
+        love.graphics.setFont(self.defaultFont)
+        love.graphics.setColor(1, 0.9, 0.2)
+        love.graphics.printf("Objective: Pop the balloon to win!", 0, 80, love.graphics.getWidth(), "center")
+        love.graphics.setColor(1, 1, 1)
+    end
+
     if self.selectedObj and self.mode == "edit" then
         love.graphics.setColor(0, 1, 0, 0.5)
         local bx, by = self.selectedObj.x, self.selectedObj.y
