@@ -24,6 +24,7 @@ function Playing:load(levelPath)
     self.mode = "edit"
     self.levelPath = levelPath
     self.win = false
+    -- cache fonts for consistent rendering and to avoid recreating per-frame
     self.defaultFont = love.graphics.newFont(12)
     self.objectiveFont = love.graphics.newFont(18)
     self.winFont = love.graphics.newFont(48)
@@ -127,15 +128,27 @@ function Playing:draw()
     end
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 10, 10)
-    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Energy Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 10, 30)
+    -- HUD background bar for readability
+    local hudX, hudY, hudW, hudH = 6, 6, 420, 48
+    love.graphics.setColor(0, 0, 0, 0.5)
+    love.graphics.rectangle("fill", hudX, hudY, hudW, hudH, 6, 6)
+    love.graphics.setColor(1,1,1)
+    love.graphics.setFont(self.defaultFont)
+    love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 12, 12)
+    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Energy Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 12, 30)
 
     -- (Objective drawing moved later to ensure it's not occluded by game objects)
 
     if self.selectedObj and self.mode == "edit" then
-        love.graphics.setColor(0, 1, 0, 0.5)
+        love.graphics.setColor(0.2, 0.9, 0.2, 0.18)
         local bx, by = self.selectedObj.x, self.selectedObj.y
-        love.graphics.circle("line", bx, by, 24)
+        -- filled halo and outline for selection clarity
+        love.graphics.circle("fill", bx, by, 28)
+        love.graphics.setColor(0.2, 0.9, 0.2)
+        love.graphics.setLineWidth(2)
+        love.graphics.circle("line", bx, by, 30)
+        love.graphics.setLineWidth(1)
+        love.graphics.setColor(1,1,1)
     end
 
     if self.win then
@@ -159,10 +172,10 @@ function Playing:draw()
     local hud_bottom = 30 + (self.defaultFont:getHeight() or 12)
     -- place objective below the HUD bottom plus some padding and accounting for objective font height
     local y = hud_bottom + 8
-        -- solid dark background for maximum contrast
-        love.graphics.setColor(0, 0, 0, 0.9)
-        love.graphics.rectangle("fill", x - 12, y - 6, w + 24, h + 12, 6, 6)
-        love.graphics.setColor(1, 0.2, 0.2)
+        -- semi-opaque rounded background for better contrast and less visual harshness
+        love.graphics.setColor(0, 0, 0, 0.75)
+        love.graphics.rectangle("fill", x - 14, y - 8, w + 28, h + 16, 8, 8)
+        love.graphics.setColor(1, 0.92, 0.92)
         love.graphics.print(text, x, y)
         love.graphics.setColor(1, 1, 1)
     end
