@@ -47,6 +47,11 @@ function physics.postSolve(f1,f2,contact,normalImpulse, tangentImpulse) end
 function physics.resetWorld(objects)
     physics.init()
     for _, obj in ipairs(objects) do
+        -- Clear any previous contact state so fans don't remain active from earlier runs
+        if obj.type == "fan" then
+            obj._contactCount = 0
+            obj.active = false
+        end
         if obj.resetBody then obj:resetBody() end
     end
 end
