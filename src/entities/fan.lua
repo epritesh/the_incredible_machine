@@ -38,7 +38,13 @@ function Fan:update(dt, objects)
     -- Activate if any Ball (dynamic body with user data type 'ball') is within the fan's radius
     local px, py = self.body:getPosition()
     local r = self.radius
-    local bodiesInArea = physics.world:queryAABB(px - r, py - r, px + r, py + r)
+    local bodiesInArea = {}
+    -- queryBoundingBox invokes the callback for each fixture overlapping the AABB
+    physics.world:queryBoundingBox(px - r, py - r, px + r, py + r, function(fixture)
+        local body = fixture:getBody()
+        table.insert(bodiesInArea, body)
+        return true
+    end)
     local anyBall = false
     for _, body in ipairs(bodiesInArea) do
         if body:getType() == "dynamic" then
