@@ -12,7 +12,8 @@ Goal.__index = Goal
 
 function Goal:new(data)
     local instance = Base.new(self, data)
-    instance.targetType = data.targetType
+    -- Support both new (`targetType`) and legacy (`type`) keys from level files
+    instance.targetType = data.targetType or data.type
     return instance
 end
 
