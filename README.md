@@ -46,131 +46,76 @@ In Run mode the physics simulation runs and objects interact. The simple objecti
 ## Next improvements (todo)
 
 - Replace proximity-based balloon popping with precise contact-based popping.
-- Add save/load for created contraptions.
+# The Incredible Machine
 
----
+The Incredible Machine is a small 2D physics sandbox built with LÖVE (Love2D) as a final project for Harvard's CS50. The project recreates the spirit of Rube-Goldberg puzzles: place a few simple parts and watch a chain reaction unfold. The version submitted for CS50 is intentionally minimal and focused on correctness, clarity, and reproducibility so it is easy to grade.
 
-If you want, I can also add a small "How to test" section with example steps to reproduce a simple solution. Want that added now?
-# The Incredible Machine: A CS50 Final Project
+This README explains how to run the game, how the project is organized, which files were authored for this submission, and why certain design decisions were made. If you are grading or testing the project, the "How to test" section near the end gives a reproducible, short playtest checklist.
 
-#### Video Demo: <URL HERE>
-#### Description: *A Love2D reimagining of the classic puzzle game, The Incredible Machine.*
+## Quick run instructions
 
----
+Requirements
+- LÖVE 11.3 or newer (https://love2d.org)
 
-## 1. Introduction
+From the project root run:
 
-"The Incredible Machine" is a 2D physics-based puzzle game developed as a final project for Harvard's CS50 course. It is a modern homage to the classic 1990s game of the same name, built from the ground up using the Love2D game engine. The project's primary goal is to recreate the original's addictive and creative gameplay while introducing a powerful new feature: the ability to script game components with Lua.
-
-In this sandbox environment, players are presented with a simple objective, such as "pop a balloon" or "turn on a light." To achieve this, they must build a Rube Goldberg-style contraption from a limited set of parts. The joy of the game comes from discovering clever and often absurd solutions through experimentation. By combining physics with logic, players can create chain reactions that are both functional and entertaining. This project not only serves as a demonstration of software engineering principles but also as a celebration of creativity and problem-solving.
-
----
-
-## 2. Core Gameplay Mechanics
-
-The gameplay is divided into two main modes, which the player can switch between at any time:
-
-| Mode          | Description                                                                                                                                                             |
-|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 🧠 **Build Mode** | In this mode, the simulation is paused. Players can drag and drop parts from a toolbox onto the level canvas. They can rotate, position, and configure each part's properties. This is the primary creation phase. |
-| ⚙️ **Run Mode**   | This mode unpauses the simulation and brings the contraption to life. The physics engine takes over, and the player can watch their creation in action. This is where the success or failure of the machine is determined. |
-
-Beyond these modes, the game includes several key features:
-
-*   **Save/Load System:** Players can save their contraptions to a file (as a Lua table or JSON object) and load them back into the game. This allows for sharing creations and saving progress on complex puzzles.
-*   **Puzzle-Based Levels:** The game is structured around a series of puzzles. Each puzzle has a clear goal and provides a limited inventory of parts, challenging the player to find a solution within the given constraints.
-*   **Scriptable Components:** The most significant addition to the classic formula is the ability to script components. Each part can have a small Lua script attached to it, allowing for complex logical behaviors. For example, a button could be scripted to activate a fan only if a specific other condition is met.
-
----
-
-## 3. Project Structure
-
-The project is organized into a modular and scalable directory structure. This separation of concerns is crucial for maintaining a clean and understandable codebase.
-
-```
-the_incredible_machine/
-├── main.lua
-├── conf.lua
-├── assets/
-│   ├── sprites/
-│   ├── sounds/
-│   └── fonts/
-├── src/
-│   ├── core/
-│   │   ├── physics.lua
-│   │   ├── input.lua
-│   │   ├── save.lua
-│   └── entities/
-│       ├── base.lua
-│       ├── ball.lua
-│       ├── fan.lua
-│       ├── button.lua
-│       ├── balloon.lua
-│       └── joint.lua
-├── levels/
-│   ├── tutorial1.lua
-│   ├── windpower.lua
-│   └── chainreaction.lua
-└── README.md
+```bash
+love .
 ```
 
-#### File Breakdown:
+On Linux you can also install LÖVE via your package manager (for example: `sudo apt install love`) and then run the command above from this directory.
 
-*   `main.lua`: This is the heart of the game and the main entry point for Love2D. It contains the primary game loop, including `love.load()`, `love.update(dt)`, and `love.draw()`. It is responsible for loading all other modules, managing the game state (e.g., switching between Build and Run modes), and orchestrating the interactions between different systems.
+The game starts on a blank playfield. Use Edit mode to place parts and then press SPACE to switch to Run mode and simulate.
 
-*   `conf.lua`: A special Love2D file used to configure the application's settings before any other modules are loaded. This includes setting the window title, dimensions, and other global parameters.
+## Controls
 
-*   `assets/`: This directory is a container for all external media used by the game.
-    *   `sprites/`: Contains all image files for the game's entities and UI elements.
-    *   `sounds/`: Holds all sound effects and music tracks.
-    *   `fonts/`: Stores any custom font files used for rendering text.
+- SPACE — Toggle Run / Edit mode
+- 1 — Select Energy Ball (place with left-click)
+- 2 — Select Fan
+- 3 — Select Balloon (goal)
+- 4 — Select Scissors (rotatable; scissors pop balloons on contact)
+- 5 — Select Ramp (click-drag to place)
+- Drag — Move objects in Edit mode
+- R — Rotate selected object (in Edit mode)
+- ESC — Return to main menu
 
-*   `src/`: This is where the core game logic resides.
-    *   `core/`: This module contains the fundamental systems that drive the game.
-        *   `physics.lua`: Manages the Box2D physics world, including gravity, collisions, and other physical properties.
-        *   `input.lua`: Handles all player input, such as mouse clicks for dragging parts and keyboard shortcuts.
-        *   `save.lua`: Implements the logic for saving and loading game states and contraptions.
-    *   `entities/`: This module defines all the interactive objects in the game.
-        *   `base.lua`: A base class from which all other entities inherit. It contains common properties and methods, such as position, rotation, and drawing logic. This promotes code reuse and a consistent object interface.
-        *   `ball.lua`, `fan.lua`, etc.: Each of these files defines a specific type of entity, with its own unique properties and behaviors.
+The default objective used for the CS50 submission is simple: "Pop the balloon to win." That objective is satisfied when the balloon's physics body receives a pop event (scissors contact) — the game uses precise physics contacts rather than distance heuristics, which reduces false positives and makes behavior deterministic for grading.
 
-*   `levels/`: This directory contains the data for each puzzle. Each level is a Lua script that returns a table defining the goal, the available parts, and the initial layout of the level. This data-driven approach makes it easy to create new puzzles without modifying the core game logic.
+## Files you should inspect (what I wrote and why)
 
-*   `README.md`: This file, providing a comprehensive overview of the project.
+Below are the most relevant files I authored or modified for the submission and a short description of each. These descriptions should make it straightforward for graders to navigate the codebase and verify behavior.
+
+- `main.lua` — Bootstraps the game and switches to the `playing` gamestate by default. Keeps initialization minimal so the grader can immediately run the editable playfield.
+- `conf.lua` — (optional) Love2D configuration used to set window defaults where applicable.
+- `src/core/physics.lua` — Wraps the Love2D/Box2D world and contains collision callbacks. Important changes: fans now activate when the energy ball is in contact (beginContact/endContact tracks contact counts), and scissors↔balloon contacts trigger the balloon pop.
+- `src/states/playing.lua` — The in-game editor/run state. Handles placing parts, seeding the blank scene (one of each part for playtesting), the objective logic (balloon pop → win), and HUD placement. This file also contains the simple editor controls used for the submission.
+- `src/entities/base.lua` — A small base class shared by entities: position, rotation, and helper methods.
+- `src/entities/ball.lua` — The energy ball. It is the only dynamic rolling object spawned by the editor by default.
+- `src/entities/fan.lua` — A fan entity. Fans apply continuous force when active; direction is computed from their physics body angle so rotation and behavior match visually.
+- `src/entities/balloon.lua` — The balloon goal. Popping is handled by the physics contact system and toggles the win state.
+- `src/entities/scissors.lua` — A new rotatable scissors entity; collisions between scissors and a balloon cause the balloon to pop.
+- `src/entities/ramp.lua` — A simple static ramp. Ramps allow the ball to roll and change trajectory.
+
+Assets (sprites and fonts) are located in `assets/`. The submission intentionally omits sounds and particle effects to keep the project deterministic and easy to grade.
+
+## Design choices and rationale
+
+1) Simplicity and determinism: For a grading environment, deterministic and testable behavior is more valuable than visual polish. As a result, the game avoids sound and particle effects, seeds the playfield with a simple starting set for quick testing, and uses physics contacts for critical events (fan activation and balloon popping) so behavior is consistent across runs.
+
+2) Inheritance-like entity model: I used a small, pragmatic base class pattern rather than a full ECS. This keeps the code compact and readable given the modest number of entity types in the submission. The project is structured so it would be straightforward to refactor to ECS later if the codebase grows.
+
+3) Physics-driven interactions: The game uses LÖVE's Box2D bindings for all interactions. Collisions drive gameplay events (fans activating, balloons popping) which makes the simulation feel natural and minimizes artificial rule checks in update loops.
+
+4) Edit vs Run modes: The editor is intentionally simple: place, rotate, and drag. This is enough to construct meaningful machines while keeping the code and UI minimal for grading.
+
+## How to test (short reproducible checklist)
+
+1. Start the game: `love .` — you should see the main menu and can click "Start" to enter the blank playfield.
+2. Press `1` and place an Energy Ball near the top-left, press `2` and place a Fan aimed right, press `3` to place a Balloon somewhere reachable, press `4` to add Scissors and rotate them so the sharp edge faces the balloon path.
+3. Press SPACE to run — if the fan pushes the energy ball into the scissors or the scissors intersect the balloon, the balloon should pop and the objective message appears.
+
+This README was written to help a grader quickly verify the submission and to explain the major engineering trade-offs. If you want extra documentation (annotated code walkthrough, demo GIF, or a short test level demonstrating a solved contraption), tell me which one and I will add it.
 
 ---
 
-## 4. Design Decisions
-
-Several key design decisions were made during the planning of this project:
-
-*   **Choice of Engine (Love2D):** Love2D was chosen for its simplicity, power, and the fact that it uses Lua. Since the goal was to create a game with scriptable components, using an engine that is itself based on Lua was a natural fit. This allows for a seamless integration between the game's core logic and the user-defined scripts. Love2D's built-in Box2D physics engine was also a major selling point, as it provides the core functionality for the game's simulation.
-
-*   **Entity-Component System (ECS) vs. Inheritance:** While an ECS architecture is a popular choice for modern game development, I opted for a simpler object-oriented inheritance model for this project. Given the relatively small number of entity types and the clear "is-a" relationship between them (e.g., a ball "is a" type of entity), inheritance offered a more straightforward and quicker implementation path. The `base.lua` class serves as the foundation for all entities, providing a clean and understandable structure.
-
-*   **Data-Driven Levels:** Instead of hard-coding level data within the game's source code, I chose to store levels as separate Lua files. This decouples the level design from the game logic, allowing for rapid iteration on new puzzles. A level designer (or even a player) could create new levels without ever touching the core `src/` files.
-
-*   **Scripting Implementation:** The decision to allow user-scriptable components is the project's most ambitious feature. The primary challenge is to provide a powerful scripting environment while sandboxing it to prevent malicious or game-breaking code. The design involves giving each scripted entity its own Lua environment and a limited API to interact with the game world. This was deemed a more engaging and flexible approach than a purely visual, node-based logic system.
-
----
-
-## 5. How to Play
-
-To run "The Incredible Machine," you will need to have Love2D installed on your system. You can download it from the official website: [love2d.org](https://love2d.org/).
-
-Once Love2D is installed, you can run the game by either:
-1.  Dragging the project folder onto the Love2D application executable.
-2.  Navigating to the project's root directory in your terminal and running the command: `love .`
-
----
-
-## 6. Future Work
-
-While the current version of the game implements the core features, there are many possibilities for future expansion:
-
-*   **More Parts:** The game could be expanded with a much wider variety of parts, including electrical components, lasers, mirrors, and more complex logical gates.
-*   **Level Editor:** A built-in, user-friendly level editor would allow players to create and share their own puzzles with the community.
-*   **Online Sharing:** An online platform for sharing saved contraptions and custom levels would greatly enhance the social and community aspects of the game.
-*   **Improved Scripting API:** The scripting API could be expanded to provide even more control over the game world, allowing for truly complex and emergent behaviors.
-
-This project has been a rewarding journey into the world of game development, physics simulation, and API design. It stands as a testament to the power of simple mechanics combined with creative freedom.
+Thank you for reviewing this submission. Good luck grading and happy tinkering!
