@@ -120,8 +120,9 @@ end
 function Playing:draw()
     love.graphics.setFont(self.defaultFont)
     -- set a subtle background color for the playfield to improve contrast
-    -- keep it subtle so sprites and HUD remain readable
-    love.graphics.setBackgroundColor(0.09, 0.12, 0.14)
+    -- store it on the state so other UI elements can derive colors from it
+    self.bgColor = self.bgColor or { 0.09, 0.12, 0.14 }
+    love.graphics.setBackgroundColor(self.bgColor)
         -- No positional goal is drawn anymore. Goal only used for logic (e.g. balloon target)
 
     for _, obj in ipairs(self.objects) do
@@ -145,9 +146,14 @@ function Playing:draw()
     end
 
     love.graphics.setColor(1, 1, 1)
-    -- HUD background bar for readability
+    -- HUD background bar for readability: derive from background color for consistent theming
     local hudX, hudY, hudW, hudH = 6, 6, 420, 48
-    love.graphics.setColor(0, 0, 0, 0.5)
+    -- make HUD slightly lighter than background while keeping alpha for see-through
+    local bg = self.bgColor
+    local hudR = math.min(bg[1] + 0.06, 1)
+    local hudG = math.min(bg[2] + 0.06, 1)
+    local hudB = math.min(bg[3] + 0.06, 1)
+    love.graphics.setColor(hudR, hudG, hudB, 0.45)
     love.graphics.rectangle("fill", hudX, hudY, hudW, hudH, 6, 6)
     love.graphics.setColor(1,1,1)
     love.graphics.setFont(self.defaultFont)
@@ -209,6 +215,24 @@ function Playing:draw()
     end
 
     -- no debug overlay in submission build
+    -- draw a cheap vignette overlay (edge fade) using semi-transparent rectangles
+    local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+    local vignetteMaxAlpha = 0.45
+    local steps = 6
+    for i = 1, steps do
+        local a = vignetteMaxAlpha * (i / steps) ^ 1.4
+        local inset = i * 8
+        love.graphics.setColor(0, 0, 0, a * 0.12)
+        -- top
+        love.graphics.rectangle("fill", inset, inset - inset, w - inset * 2, inset)
+        -- bottom
+        love.graphics.rectangle("fill", inset, h - inset, w - inset * 2, inset)
+        -- left
+        love.graphics.rectangle("fill", inset - inset, inset, inset, h - inset * 2)
+        -- right
+        love.graphics.rectangle("fill", w - inset, inset, inset, h - inset * 2)
+    end
+    love.graphics.setColor(1,1,1)
 end
 
 function Playing:keypressed(key)
