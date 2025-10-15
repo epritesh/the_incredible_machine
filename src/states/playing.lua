@@ -28,6 +28,20 @@ function Playing:load(levelPath)
     self.defaultFont = love.graphics.newFont(12)
     self.objectiveFont = love.graphics.newFont(18)
     self.winFont = love.graphics.newFont(48)
+    -- small HUD icon cache (icons used by the selected-type display)
+    self.hudIcons = {}
+    local function safeLoad(path)
+        if love.filesystem.getInfo(path) then
+            return love.graphics.newImage(path)
+        end
+        return nil
+    end
+    self.hudIcons.ball = safeLoad("assets/sprites/ball.png")
+    self.hudIcons.fan = safeLoad("assets/sprites/fan_off.png") or safeLoad("assets/sprites/fan_on.png")
+    self.hudIcons.balloon = safeLoad("assets/sprites/balloon.png")
+    self.hudIcons.scissors = safeLoad("assets/sprites/scissors.png")
+    -- ramp doesn't have a single sprite; reuse fan_off as a neutral placeholder if available
+    self.hudIcons.ramp = safeLoad("assets/sprites/fan_off.png")
 
     physics.resetWorld(self.objects)
     -- If no levelPath provided, start with a blank playfield and default balloon objective
@@ -135,7 +149,18 @@ function Playing:draw()
     love.graphics.setColor(1,1,1)
     love.graphics.setFont(self.defaultFont)
     love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 12, 12)
-    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Energy Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 12, 30)
+    local selectionText = "Selected: " .. self.selectedType .. "  [1=Energy Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)"
+    love.graphics.print(selectionText, 12, 30)
+    -- draw small icon next to the selection text if available
+    local icon = self.hudIcons[self.selectedType]
+    if icon then
+        local iconSize = 18
+        local sx = iconSize / icon:getWidth()
+        local sy = iconSize / icon:getHeight()
+        love.graphics.setColor(1,1,1)
+        love.graphics.draw(icon, 12 + self.defaultFont:getWidth("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]" ) + 12, 30 + 2, 0, sx, sy)
+        love.graphics.setColor(1,1,1)
+    end
 
     -- (Objective drawing moved later to ensure it's not occluded by game objects)
 
