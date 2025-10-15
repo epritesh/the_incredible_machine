@@ -4,8 +4,8 @@ local Input = require("src.core.input")
 function love.load()
     Gamestate.register("main_menu", require("src.states.main_menu"))
     Gamestate.register("playing", require("src.states.playing"))
-    -- Start directly on the single level (tutorial with balloon objective)
-    Gamestate.switch("playing", "levels/windpower.lua")
+    -- Start with a blank playfield by default (no level files)
+    Gamestate.switch("playing")
 end
 
 function love.update(dt)

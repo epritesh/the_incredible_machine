@@ -29,11 +29,17 @@ function Playing:load(levelPath)
     self.winFont = love.graphics.newFont(48)
 
     physics.resetWorld(self.objects)
-    local levelData = love.filesystem.load(self.levelPath)()
+    -- If no levelPath provided, start with a blank playfield and default balloon objective
+    if not self.levelPath then
+        self.objects = {}
+        self.goal = Goal:new({ x = love.graphics.getWidth()/2, y = 100, type = "balloon", targetType = "balloon" })
+        return
+    end
 
+    local levelData = love.filesystem.load(self.levelPath)()
     self:loadObjects(levelData.objects)
-        -- Keep goal data for logic (target type) but do not draw a positional goal anymore
-        self.goal = Goal:new(levelData.goal)
+    -- Keep goal data for logic (target type) but do not draw a positional goal anymore
+    self.goal = Goal:new(levelData.goal)
 end
 
 function Playing:loadObjects(objectsData)
