@@ -52,23 +52,7 @@ function Balloon:update(dt, objects)
     -- Light upward lift (negative gravity)
     self.body:applyForce(0, -800)
 
-    -- Check for collisions with sharp objects (Fans when active, Scissors)
-    for _, obj in ipairs(objects) do
-        if (obj.type == "fan" and obj.active) or obj.type == "scissors" then
-            local bx, by = self.body:getPosition()
-            local ox, oy = obj.x or (obj.body and obj.body:getX()), obj.y or (obj.body and obj.body:getY())
-            if ox and oy then
-                local dist = ((bx - ox)^2 + (by - oy)^2) ^ 0.5
-                -- use a radius threshold that combines sizes
-                local threshold = 40
-                if dist < threshold and not self.popped then
-                    self.popped = true
-                    if self.body then self.body:destroy() end
-                    break
-                end
-            end
-        end
-    end
+    -- Popping is handled by physics contact callbacks (precise scissors <-> balloon contacts)
 end
 
 function Balloon:draw()

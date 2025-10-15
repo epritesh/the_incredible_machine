@@ -18,7 +18,12 @@ function physics.beginContact(f1, f2, contact)
             b._contactCount = (b._contactCount or 0) + 1
             b.active = true
         end
-        -- scissors <-> balloon handled in balloon update or could be added here later
+        -- scissors <-> balloon: set balloon to popped when it touches scissors (precise contact)
+        if a.type == "scissors" and b.type == "balloon" then
+            b.popped = true
+        elseif b.type == "scissors" and a.type == "balloon" then
+            a.popped = true
+        end
     end
 end
 
