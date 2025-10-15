@@ -59,8 +59,15 @@ function Playing:update(dt)
         physics.world:update(dt)
         for _, obj in ipairs(self.objects) do
             if obj.update then obj:update(dt, self.objects) end
-            if obj.type == self.goal.targetType and self.goal:isInside(obj) then
-                self.win = true
+            -- If the goal is to pop a balloon, consider a popped balloon as win immediately
+            if self.goal and self.goal.targetType == "balloon" then
+                if obj.type == "balloon" and obj.popped then
+                    self.win = true
+                end
+            else
+                if obj.type == self.goal.targetType and self.goal:isInside(obj) then
+                    self.win = true
+                end
             end
         end
     end
