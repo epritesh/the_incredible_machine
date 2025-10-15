@@ -13,6 +13,7 @@ local entityTypes = {
     fan = Fan,
     balloon = Balloon,
     scissors = Scissors,
+    ramp = require("src.entities.ramp"),
 }
 
 function Playing:load(levelPath)
@@ -75,9 +76,25 @@ function Playing:draw()
         if obj.draw then obj:draw() end
     end
 
+    -- Ramp preview while dragging
+    if self.rampDrag then
+        local d = self.rampDrag
+        love.graphics.setColor(0.6, 0.4, 0.3, 0.8)
+        local cx = (d.x1 + d.x2)/2
+        local cy = (d.y1 + d.y2)/2
+        local angle = math.atan2(d.y2 - d.y1, d.x2 - d.x1)
+        local length = math.sqrt((d.x2-d.x1)^2 + (d.y2-d.y1)^2)
+        love.graphics.push()
+        love.graphics.translate(cx, cy)
+        love.graphics.rotate(angle)
+        love.graphics.rectangle("fill", -length/2, -6, length, 12)
+        love.graphics.pop()
+        love.graphics.setColor(1,1,1)
+    end
+
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 10, 10)
-    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Balloon, 4=Scissors] (Drag to move, R to rotate)", 10, 30)
+    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 10, 30)
 
     -- On-screen objective for balloon-goal levels
     if self.goal and self.goal.targetType == "balloon" then
@@ -150,6 +167,11 @@ function Playing:mousepressed(x, y, button)
         end
 
         local data = { x = x, y = y }
+        -- Start drag for ramp placement if selected
+        if self.selectedType == "ramp" then
+            self.rampDrag = { x1 = x, y1 = y, x2 = x, y2 = y }
+            return
+        end
         if self.selectedType == "ball" then
             table.insert(self.objects, Ball:new(data))
         elseif self.selectedType == "fan" then
@@ -164,6 +186,18 @@ end
 
 function Playing:mousereleased(x, y, button)
     if self.mode == "edit" and button == 1 then
+        -- finalize ramp if in drag
+        if self.rampDrag then
+            local d = self.rampDrag
+            d.x2 = x; d.y2 = y
+            local cx = (d.x1 + d.x2)/2
+            local cy = (d.y1 + d.y2)/2
+            local angle = math.atan2(d.y2 - d.y1, d.x2 - d.x1)
+            local length = math.sqrt((d.x2-d.x1)^2 + (d.y2-d.y1)^2)
+            table.insert(self.objects, require("src.entities.ramp"):new({ x = cx, y = cy, angle = angle, length = length }))
+            self.rampDrag = nil
+            return
+        end
         self.selectedObj = nil
     end
 end
@@ -173,6 +207,11 @@ function Playing:mousemoved(x, y, dx, dy)
         self.selectedObj.x = x
         self.selectedObj.y = y
         if self.selectedObj.resetBody then self.selectedObj:resetBody() end
+    end
+
+    if self.rampDrag then
+        self.rampDrag.x2 = x
+        self.rampDrag.y2 = y
     end
 end
 
