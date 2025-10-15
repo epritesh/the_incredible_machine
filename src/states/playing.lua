@@ -146,6 +146,7 @@ function Playing:keypressed(key)
     elseif key == "2" then self.selectedType = "fan"
     elseif key == "3" then self.selectedType = "balloon"
     elseif key == "4" then self.selectedType = "scissors"
+    elseif key == "5" then self.selectedType = "ramp"
 
     elseif key == "r" and self.selectedObj then
         self.selectedObj.angle = (self.selectedObj.angle or 0) + math.pi / 4
