@@ -42,6 +42,7 @@ function Fan:update(dt, objects)
 
     -- Apply forces to dynamic bodies within the fan radius
     local px, py = self.body:getPosition()
+    local ang = (self.body and self.body.getAngle) and self.body:getAngle() or self.angle
     local r = self.radius
     physics.world:queryBoundingBox(px - r, py - r, px + r, py + r, function(fixture)
         local body = fixture:getBody()
@@ -50,8 +51,8 @@ function Fan:update(dt, objects)
             local dx, dy = bx - px, by - py
             local dist = math.sqrt(dx*dx + dy*dy)
             if dist < r and dist > 0 then
-                local ax = math.cos(self.angle)
-                local ay = math.sin(self.angle)
+                local ax = math.cos(ang)
+                local ay = math.sin(ang)
                 local strength = self.forceMagnitude * self.power * (1 - dist/r)
                 -- For light, buoyant balloons, add a short impulse so the fan visibly moves them
                 local ud = fixture:getUserData()
