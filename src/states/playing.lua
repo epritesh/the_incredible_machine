@@ -203,10 +203,12 @@ function Playing:draw()
         local h = font:getHeight()
         local x = (love.graphics.getWidth() - w) / 2
     -- compute a safe Y that sits below the HUD lines so the HUD is not occluded
-    -- HUD lines are printed at y = 10 and y = 30 above, so ensure the objective is drawn below those
+    -- HUD lines are printed at y = 12 and y = 30 above; add extra padding to avoid overlap
     local hud_bottom = 30 + (self.defaultFont:getHeight() or 12)
-    -- place objective below the HUD bottom plus some padding and accounting for objective font height
-    local y = hud_bottom + 8
+    -- additional padding to ensure objective doesn't crowd top HUD (increased from 8 to 32)
+    local extra_padding = 32
+    -- place objective below the HUD bottom plus extra padding and accounting for objective font height
+    local y = hud_bottom + extra_padding
         -- semi-opaque rounded background for better contrast and less visual harshness
         love.graphics.setColor(0, 0, 0, 0.75)
         love.graphics.rectangle("fill", x - 14, y - 8, w + 28, h + 16, 8, 8)
