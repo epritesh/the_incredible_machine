@@ -119,6 +119,9 @@ end
 
 function Playing:draw()
     love.graphics.setFont(self.defaultFont)
+    -- set a subtle background color for the playfield to improve contrast
+    -- keep it subtle so sprites and HUD remain readable
+    love.graphics.setBackgroundColor(0.09, 0.12, 0.14)
         -- No positional goal is drawn anymore. Goal only used for logic (e.g. balloon target)
 
     for _, obj in ipairs(self.objects) do
