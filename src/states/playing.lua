@@ -233,7 +233,27 @@ function Playing:draw()
         love.graphics.rectangle("fill", w - inset, inset, inset, h - inset * 2)
     end
     love.graphics.setColor(1,1,1)
+    -- cursor ghost (selected item preview)
+    self:drawCursorGhost()
 end
+
+-- Draw a ghost icon near the cursor when in Edit mode to help placement
+function Playing:drawCursorGhost()
+    if self.mode ~= "edit" then return end
+    -- don't draw a ghost while dragging to place a ramp (we show the ramp preview)
+    if self.rampDrag then return end
+    local icon = self.hudIcons[self.selectedType]
+    if not icon then return end
+    local mx, my = love.mouse.getPosition()
+    local desiredSize = 28
+    local sx = desiredSize / icon:getWidth()
+    local sy = desiredSize / icon:getHeight()
+    local offset = 18
+    love.graphics.setColor(1,1,1,0.85)
+    love.graphics.draw(icon, mx - offset - desiredSize, my - desiredSize/2, 0, sx, sy)
+    love.graphics.setColor(1,1,1)
+end
+
 
 function Playing:keypressed(key)
     if self.win and (key == "return" or key == "kpenter") then
