@@ -47,7 +47,24 @@ function Playing:load(levelPath)
         return
     end
 
-    local levelData = love.filesystem.load(self.levelPath)()
+    -- Safely load the level file. If it's missing (was removed during simplification),
+    -- fall back to the seeded blank playfield used above.
+    local loader = love.filesystem.load(self.levelPath)
+    if not loader then
+        -- fallback: populate a seeded playfield
+        local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+        local cx, cy = w/2, h/2
+        self.objects = {}
+        table.insert(self.objects, Ball:new({ x = cx - 240, y = cy }))
+        table.insert(self.objects, Fan:new({ x = cx - 120, y = cy }))
+        table.insert(self.objects, Balloon:new({ x = cx, y = cy - 80 }))
+        table.insert(self.objects, Scissors:new({ x = cx + 120, y = cy }))
+        table.insert(self.objects, require("src.entities.ramp"):new({ x = cx + 240, y = cy + 40, angle = -0.4, length = 180 }))
+        self.goal = Goal:new({ x = cx, y = 100, type = "balloon", targetType = "balloon" })
+        return
+    end
+
+    local levelData = loader()
     self:loadObjects(levelData.objects)
     -- Keep goal data for logic (target type) but do not draw a positional goal anymore
     self.goal = Goal:new(levelData.goal)
