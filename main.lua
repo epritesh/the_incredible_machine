@@ -1,13 +1,15 @@
 local Gamestate = require("src.core.gamestate")
+local Input = require("src.core.input")
 
 function love.load()
     Gamestate.register("main_menu", require("src.states.main_menu"))
-    Gamestate.register("level_select", require("src.states.level_select"))
     Gamestate.register("playing", require("src.states.playing"))
-    Gamestate.switch("main_menu")
+    -- Start directly on the single level (tutorial with balloon objective)
+    Gamestate.switch("playing", "levels/windpower.lua")
 end
 
 function love.update(dt)
+    Input.update(dt)
     Gamestate.update(dt)
 end
 
@@ -16,6 +18,7 @@ function love.draw()
 end
 
 function love.keypressed(key, scancode, isrepeat)
+    Input.keypressed(key, scancode, isrepeat)
     Gamestate.keypressed(key, scancode, isrepeat)
 end
 

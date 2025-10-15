@@ -5,8 +5,7 @@ local MainMenu = {}
 function MainMenu:load()
     self.title = "The Incredible Machine"
     self.options = {
-        { text = "Start Game", action = function() Gamestate.switch("playing") end },
-        { text = "Level Select", action = function() Gamestate.switch("level_select") end },
+        { text = "Start Game", action = function() Gamestate.switch("playing", "levels/windpower.lua") end },
         { text = "Quit", action = function() love.event.quit() end },
     }
     self.selected = 1

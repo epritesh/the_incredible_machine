@@ -8,9 +8,9 @@ local Goal = {
 setmetatable(Goal, Base)
 Goal.__index = Goal
 
-function Goal:new(x, y, targetType)
-    local instance = Base.new(self, x, y)
-    instance.targetType = targetType
+function Goal:new(data)
+    local instance = Base.new(self, data)
+    instance.targetType = data.targetType
     return instance
 end
 

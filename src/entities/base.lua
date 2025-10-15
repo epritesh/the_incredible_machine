@@ -5,14 +5,15 @@ Base.__index = Base -- Instances will look for methods in this table if they don
 -- This is a constructor that should be called on a 'class' table.
 -- For example: Fan:new(x, y)
 -- It creates a new instance and sets its metatable to the class.
-function Base.new(class, x, y)
+function Base.new(class, data)
     local instance = {}
     setmetatable(instance, class) -- Use the explicit 'class' argument
 
     -- Initialize default properties for all objects
-    instance.x = x or 0
-    instance.y = y or 0
-    instance.angle = class.angle or 0
+    instance.x = data.x or 0
+    instance.y = data.y or 0
+    instance.angle = data.angle or class.angle or 0
+    instance.channel = data.channel
     instance.body = nil
     instance.shape = nil
     instance.fixture = nil

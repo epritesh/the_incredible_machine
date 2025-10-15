@@ -10,14 +10,16 @@ local Button = {
 setmetatable(Button, Base)
 Button.__index = Button
 
-function Button:new(x, y)
-    local instance = Base.new(self, x, y)
+function Button:new(data)
+    local instance = Base.new(self, data)
     instance:resetBody()
     return instance
 end
 
 function Button:resetBody()
+    if self.body then self.body:destroy() end
     self.body = love.physics.newBody(physics.world, self.x, self.y, "static")
+    self.body:setAngle(self.angle)
     self.shape = love.physics.newRectangleShape(self.width, self.height)
     self.fixture = love.physics.newFixture(self.body, self.shape)
     self.fixture:setUserData(self)
@@ -26,7 +28,7 @@ end
 function Button:update(dt, objects)
     -- Consider "pressed" if any dynamic body overlaps an expanded AABB
     self.pressed = false
-    local px, py = self.x, self.y
+    local px, py = self.body:getPosition()
     local halfW, halfH = self.width/2 + 4, self.height/2 + 4
     for _, body in ipairs(physics.world:getBodies()) do
         if body:getType() == "dynamic" then
@@ -45,7 +47,11 @@ function Button:draw()
     else
         love.graphics.setColor(0.7, 0.2, 0.2)
     end
-    love.graphics.rectangle("fill", self.x - self.width/2, self.y - self.height/2, self.width, self.height)
+    love.graphics.push()
+    love.graphics.translate(self.x, self.y)
+    love.graphics.rotate(self.angle)
+    love.graphics.rectangle("fill", -self.width/2, -self.height/2, self.width, self.height)
+    love.graphics.pop()
 end
 
 function Button:isInside(mx, my)

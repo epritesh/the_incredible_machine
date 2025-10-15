@@ -16,8 +16,8 @@ setmetatable(Fan, Base) -- Inherit from Base
 Fan.__index = Fan -- For method lookups
 
 -- 2. The constructor for creating fan INSTANCES
-function Fan:new(x, y)
-    local instance = Base.new(self, x, y) -- Call base constructor
+function Fan:new(data)
+    local instance = Base.new(self, data) -- Call base constructor
     instance.sprite_on = love.graphics.newImage("assets/sprites/fan_on.png")
     instance.sprite_off = love.graphics.newImage("assets/sprites/fan_off.png")
     instance:resetBody()
@@ -26,19 +26,29 @@ end
 
 -- 3. All methods are now defined on the Fan class and shared by instances
 function Fan:resetBody()
+    if self.body then self.body:destroy() end
     self.body = love.physics.newBody(physics.world, self.x, self.y, "static")
+    self.body:setAngle(self.angle)
     self.shape = love.physics.newRectangleShape(self.width, self.height)
     self.fixture = love.physics.newFixture(self.body, self.shape)
     self.fixture:setUserData(self)
 end
 
 function Fan:update(dt, objects)
-    -- Auto: on if ANY button is pressed
     local anyPressed = false
-    for _, o in ipairs(objects) do
-        if o.type == "button" and o.pressed then
-            anyPressed = true
-            break
+    if self.channel then
+        for _, o in ipairs(objects) do
+            if o.type == "button" and o.pressed and o.channel == self.channel then
+                anyPressed = true
+                break
+            end
+        end
+    else -- Default behavior if no channel is set
+        for _, o in ipairs(objects) do
+            if o.type == "button" and o.pressed then
+                anyPressed = true
+                break
+            end
         end
     end
     self.active = anyPressed
