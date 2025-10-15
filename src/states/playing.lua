@@ -118,7 +118,7 @@ function Playing:draw()
         love.graphics.printf("Press Enter to continue", 0, 400, love.graphics.getWidth(), "center")
     end
 
-    -- Draw objective last so it is always visible
+    -- Draw objective last so it is always visible, but place it below the HUD
     if self.goal and self.goal.targetType == "balloon" then
         local text = "POP THE BALLOON TO WIN!"
         local font = self.objectiveFont or self.defaultFont
@@ -126,7 +126,11 @@ function Playing:draw()
         local w = font:getWidth(text)
         local h = font:getHeight()
         local x = (love.graphics.getWidth() - w) / 2
-        local y = 16
+        -- compute a safe Y that sits below the HUD lines so the HUD is not occluded
+        local hudLines = 2
+        local hudSpacing = 6
+        local hudHeight = (self.defaultFont:getHeight() * hudLines) + hudSpacing
+        local y = hudHeight + 8
         -- solid dark background for maximum contrast
         love.graphics.setColor(0, 0, 0, 0.9)
         love.graphics.rectangle("fill", x - 12, y - 6, w + 24, h + 12, 6, 6)
