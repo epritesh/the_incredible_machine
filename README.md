@@ -1,3 +1,56 @@
+# The Incredible Machine
+
+A small 2D physics sandbox built with LÖVE (Love2D) as a CS50 final project. Place parts, toggle the simulation, and build Rube-Goldberg-style contraptions.
+
+This repository intentionally keeps the experience minimal: no sounds or particle effects are included so the game is easy to test and grade.
+
+## Run
+
+Requirements:
+- LÖVE 11.3 or later (https://love2d.org)
+
+From the project root run:
+
+```bash
+love .
+```
+
+On Linux you can also install love via your package manager (for example: `sudo apt install love`), then run the command above from this directory.
+
+## Controls
+
+- SPACE — Toggle Run / Edit mode
+- 1 — Select Energy Ball (place with left-click)
+- 2 — Select Fan
+- 3 — Select Balloon
+- 4 — Select Scissors
+- 5 — Select Ramp (click-drag to place)
+- Drag — Move placed objects in Edit mode
+- R — Rotate selected object (in Edit mode)
+- ESC — Return to main menu
+
+In Run mode the physics simulation runs and objects interact. The simple objective is "POP THE BALLOON TO WIN!" when the goal target is a balloon.
+
+## Project structure (short)
+
+- `main.lua` — Bootstraps the game and states
+- `src/` — Game code: entities, physics, states
+- `assets/` — Sprites and fonts
+
+## Notes for grading / running
+
+- The game starts with a blank playfield. Use Edit mode to place parts and then press SPACE to run the simulation.
+- The game intentionally avoids sounds/particles.
+- If you see visual overlap of HUD and objective text, resize the window or report the resolution and I'll adjust the HUD padding.
+
+## Next improvements (todo)
+
+- Replace proximity-based balloon popping with precise contact-based popping.
+- Add save/load for created contraptions.
+
+---
+
+If you want, I can also add a small "How to test" section with example steps to reproduce a simple solution. Want that added now?
 # The Incredible Machine: A CS50 Final Project
 
 #### Video Demo: <URL HERE>
