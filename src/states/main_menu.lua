@@ -19,7 +19,8 @@ function MainMenu:update(dt)
 end
 
 function MainMenu:draw()
-    love.graphics.setBackgroundColor(0.12, 0.13, 0.15)
+    -- lighter menu background for brighter feel
+    love.graphics.setBackgroundColor(0.18, 0.20, 0.22)
     love.graphics.setColor(1, 1, 1)
     love.graphics.setFont(self.titleFont)
     -- subtle shadow for the title

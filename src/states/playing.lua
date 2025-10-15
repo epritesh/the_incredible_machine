@@ -121,7 +121,8 @@ function Playing:draw()
     love.graphics.setFont(self.defaultFont)
     -- set a subtle background color for the playfield to improve contrast
     -- store it on the state so other UI elements can derive colors from it
-    self.bgColor = self.bgColor or { 0.09, 0.12, 0.14 }
+    -- use a slightly lighter background for better visibility
+    self.bgColor = self.bgColor or { 0.14, 0.18, 0.20 }
     love.graphics.setBackgroundColor(self.bgColor)
         -- No positional goal is drawn anymore. Goal only used for logic (e.g. balloon target)
 
