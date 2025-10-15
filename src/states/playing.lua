@@ -167,31 +167,7 @@ function Playing:draw()
         love.graphics.setColor(1, 1, 1)
     end
 
-    -- Debug overlay: recent contact points and fan states
-    if physics.debug and physics.debug.enabled then
-        -- draw recent contact points
-        love.graphics.setColor(1, 0.6, 0, 1)
-        for _, c in ipairs(physics.debug.recent) do
-            -- fade out older contacts
-            local age = love.timer.getTime() - (c.t or 0)
-            if age < 1.5 then
-                local alpha = math.max(0, 1 - age / 1.5)
-                love.graphics.setColor(1, 0.6, 0, alpha)
-                love.graphics.circle("fill", c.x, c.y, 6)
-            end
-        end
-
-        -- draw fan contact counts
-        for _, obj in ipairs(self.objects) do
-            if obj.type == "fan" then
-                local px, py = (obj.body and obj.body.getPosition) and obj.body:getPosition() or obj.x, obj.y
-                love.graphics.setColor(1,1,1)
-                local cnt = obj._contactCount or 0
-                love.graphics.print(string.format("fan: active=%s cnt=%d", tostring(obj.active), cnt), px + 8, py - 8)
-            end
-        end
-        love.graphics.setColor(1,1,1)
-    end
+    -- no debug overlay in submission build
 end
 
 function Playing:keypressed(key)
@@ -219,8 +195,6 @@ function Playing:keypressed(key)
         if self.selectedObj.resetBody then self.selectedObj:resetBody() end
     elseif key == "escape" then
         Gamestate.switch("main_menu")
-    elseif key == "d" then
-        physics.setDebug(not (physics.debug and physics.debug.enabled))
     end
 end
 

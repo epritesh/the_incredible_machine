@@ -1,9 +1,4 @@
 local physics = {}
-physics.debug = {
-    enabled = false,
-    recent = {}, -- circular buffer of recent contacts {x,y,t}
-    max = 64,
-}
 
 function physics.init()
     physics.world = love.physics.newWorld(0, 9.81 * 64, true)
@@ -14,15 +9,6 @@ end
 function physics.beginContact(f1, f2, contact)
     local a = f1 and f1:getUserData() or nil
     local b = f2 and f2:getUserData() or nil
-    -- record contact point for debug overlay (if available)
-    if physics.debug and physics.debug.enabled and contact and contact.getPositions then
-        local x1,y1,x2,y2 = contact:getPositions()
-        local x,y = x1 or x2, y1 or y2
-        if x and y then
-            table.insert(physics.debug.recent, { x = x, y = y, t = love.timer.getTime() })
-            if #physics.debug.recent > physics.debug.max then table.remove(physics.debug.recent, 1) end
-        end
-    end
     if a and b then
         -- fan <-> energy_ball
         if a.type == "fan" and b.type == "energy_ball" then
@@ -68,13 +54,7 @@ function physics.resetWorld(objects)
         end
         if obj.resetBody then obj:resetBody() end
     end
-    -- clear debug contacts
-    if physics.debug then physics.debug.recent = {} end
 end
 
-function physics.setDebug(enabled)
-    physics.debug = physics.debug or {}
-    physics.debug.enabled = enabled and true or false
-end
 
 return physics
