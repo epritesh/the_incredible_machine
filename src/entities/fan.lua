@@ -56,11 +56,13 @@ function Fan:update(dt, objects)
                 -- For light, buoyant balloons, add a short impulse so the fan visibly moves them
                 local ud = fixture:getUserData()
                 if ud and ud.type == "balloon" then
-                    -- small impulse scaled by strength
-                    local impulse = strength * 0.02
+                    -- larger impulse for buoyant balloons so the fan visibly moves them
+                    local impulse = math.max(0.05, strength * 0.06)
                     body:applyLinearImpulse(ax * impulse, ay * impulse)
                     -- also apply a gentle continuous force for realism
-                    body:applyForce(ax * (strength * 0.2), ay * (strength * 0.2))
+                    body:applyForce(ax * (strength * 0.35), ay * (strength * 0.35))
+                    -- debug print (uncomment for troubleshooting)
+                    -- print("Fan applying to balloon", ud, "impulse", impulse)
                 else
                     -- apply continuous force to other dynamic bodies
                     body:applyForce(ax * strength, ay * strength)
@@ -90,7 +92,8 @@ function Fan:draw()
     love.graphics.pop()
 
     if self.active then
-        love.graphics.setColor(0.8, 0.9, 1, 0.12)
+        -- more subtle overlay; was previously bright and could appear white on some displays
+        love.graphics.setColor(0.2, 0.6, 1, 0.06)
         love.graphics.circle("fill", px, py, self.radius)
     end
 end
