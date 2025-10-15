@@ -36,56 +36,28 @@ end
 
 function Fan:update(dt, objects)
     -- Activate if any Ball (dynamic body with user data type 'ball') is within the fan's radius
+    -- Fan activation is now controlled by contact callbacks (energy_ball touching fan)
+    -- Use the fan's active flag set by physics callbacks
+    if not self.active then return end
+
+    -- Apply forces to dynamic bodies within the fan radius
     local px, py = self.body:getPosition()
     local r = self.radius
-    local bodiesInArea = {}
-    -- queryBoundingBox invokes the callback for each fixture overlapping the AABB
     physics.world:queryBoundingBox(px - r, py - r, px + r, py + r, function(fixture)
         local body = fixture:getBody()
-        table.insert(bodiesInArea, body)
+        if body:getType() == "dynamic" then
+                local bx, by = body:getPosition()
+            local dx, dy = bx - px, by - py
+            local dist = math.sqrt(dx*dx + dy*dy)
+            if dist < r and dist > 0 then
+                local ax = math.cos(self.angle)
+                local ay = math.sin(self.angle)
+                local force = self.forceMagnitude * self.power * (1 - dist/r)
+                body:applyForce(ax * force, ay * force)
+            end
+        end
         return true
     end)
-    local anyBall = false
-    for _, body in ipairs(bodiesInArea) do
-        if body:getType() == "dynamic" then
-            local user = body:getUserData()
-            if user and user.type == "ball" then
-                -- ensure within circular radius
-                local bx, by = body:getPosition()
-                local dx, dy = bx - px, by - py
-                if (dx*dx + dy*dy) <= r*r then
-                    anyBall = true
-                    break
-                end
-            end
-        end
-    end
-    self.active = anyBall
-
-    if self.active then
-        -- More efficient physics query!
-        local px, py = self.body:getPosition()
-        local r = self.radius
-        -- Query the world for bodies inside the fan's area of effect
-        local bodiesInArea = physics.world:queryAABB(px - r, py - r, px + r, py + r)
-
-        for _, body in ipairs(bodiesInArea) do
-            if body:getType() == "dynamic" then
-                local bx, by = body:getPosition()
-                local dx, dy = bx - px, by - py
-                local dist = math.sqrt(dx*dx + dy*dy)
-
-                if dist < r and dist > 0 then
-                    -- Compute directional push based on angle
-                    local ax = math.cos(self.angle)
-                    local ay = math.sin(self.angle)
-                    -- Force weakens over distance
-                    local force = self.forceMagnitude * self.power * (1 - dist/r)
-                    body:applyForce(ax * force, ay * force)
-                end
-            end
-        end
-    end
 end
 
 function Fan:draw()

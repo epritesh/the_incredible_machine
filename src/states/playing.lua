@@ -94,7 +94,7 @@ function Playing:draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 10, 10)
-    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 10, 30)
+    love.graphics.print("Selected: " .. self.selectedType .. "  [1=Energy Ball, 2=Fan, 3=Balloon, 4=Scissors, 5=Ramp] (Drag to move, R to rotate)", 10, 30)
 
     -- On-screen objective for balloon-goal levels
     if self.goal and self.goal.targetType == "balloon" then
@@ -173,7 +173,7 @@ function Playing:mousepressed(x, y, button)
             self.rampDrag = { x1 = x, y1 = y, x2 = x, y2 = y }
             return
         end
-        if self.selectedType == "ball" then
+        if self.selectedType == "ball" or self.selectedType == "energy_ball" then
             table.insert(self.objects, Ball:new(data))
         elseif self.selectedType == "fan" then
             table.insert(self.objects, Fan:new(data))

@@ -2,7 +2,7 @@ local Base = require("src.entities.base")
 local physics = require("src.core.physics")
 
 local Ball = {
-    type = "ball",
+    type = "energy_ball",
     radius = 16
 }
 setmetatable(Ball, Base)
