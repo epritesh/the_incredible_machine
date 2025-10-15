@@ -245,13 +245,25 @@ function Playing:drawCursorGhost()
     if self.mode ~= "edit" then return end
     -- don't draw a ghost while dragging to place a ramp (we show the ramp preview)
     if self.rampDrag then return end
+    local mx, my = love.mouse.getPosition()
+    local offset = 18
+    -- For ramps, show a simple text label instead of an icon (no image available)
+    if self.selectedType == "ramp" then
+        local label = "Ramp"
+        love.graphics.setFont(self.defaultFont)
+        local tw = self.defaultFont:getWidth(label)
+        local th = self.defaultFont:getHeight()
+        love.graphics.setColor(1,1,1,0.95)
+        love.graphics.print(label, mx - offset - tw, my - th/2)
+        love.graphics.setColor(1,1,1)
+        return
+    end
+
     local icon = self.hudIcons[self.selectedType]
     if not icon then return end
-    local mx, my = love.mouse.getPosition()
     local desiredSize = 28
     local sx = desiredSize / icon:getWidth()
     local sy = desiredSize / icon:getHeight()
-    local offset = 18
     love.graphics.setColor(1,1,1,0.85)
     love.graphics.draw(icon, mx - offset - desiredSize, my - desiredSize/2, 0, sx, sy)
     love.graphics.setColor(1,1,1)
