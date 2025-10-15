@@ -24,6 +24,7 @@ function Playing:load(levelPath)
     self.levelPath = levelPath
     self.win = false
     self.defaultFont = love.graphics.newFont(12)
+    self.objectiveFont = love.graphics.newFont(18)
     self.winFont = love.graphics.newFont(48)
 
     physics.resetWorld(self.objects)
@@ -77,13 +78,21 @@ function Playing:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("Mode: " .. self.mode .. "  [SPACE = toggle run/edit]", 10, 10)
     love.graphics.print("Selected: " .. self.selectedType .. "  [1=Ball, 2=Fan, 3=Balloon, 4=Scissors] (Drag to move, R to rotate)", 10, 30)
-    love.graphics.print("Level: " .. self.levelPath .. "  [ESC to menu]", 10, 50)
 
     -- On-screen objective for balloon-goal levels
     if self.goal and self.goal.targetType == "balloon" then
-        love.graphics.setFont(self.defaultFont)
+        local text = "Objective: Pop the balloon to win!"
+        local font = self.objectiveFont or self.defaultFont
+        love.graphics.setFont(font)
+        local w = font:getWidth(text)
+        local h = font:getHeight()
+        local x = (love.graphics.getWidth() - w) / 2
+        local y = 60
+        -- dark translucent background for readability
+        love.graphics.setColor(0, 0, 0, 0.6)
+        love.graphics.rectangle("fill", x - 8, y - 4, w + 16, h + 8, 6, 6)
         love.graphics.setColor(1, 0.9, 0.2)
-        love.graphics.printf("Objective: Pop the balloon to win!", 0, 80, love.graphics.getWidth(), "center")
+        love.graphics.print(text, x, y)
         love.graphics.setColor(1, 1, 1)
     end
 
