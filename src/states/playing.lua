@@ -32,7 +32,18 @@ function Playing:load(levelPath)
     -- If no levelPath provided, start with a blank playfield and default balloon objective
     if not self.levelPath then
         self.objects = {}
-        self.goal = Goal:new({ x = love.graphics.getWidth()/2, y = 100, type = "balloon", targetType = "balloon" })
+        -- Populate the playfield with one of each component so playtesting starts with parts available
+        local w, h = love.graphics.getWidth(), love.graphics.getHeight()
+        local cx, cy = w/2, h/2
+
+        -- Create one Energy Ball, Fan, Balloon, Scissors, and a Ramp
+        table.insert(self.objects, Ball:new({ x = cx - 240, y = cy }))
+        table.insert(self.objects, Fan:new({ x = cx - 120, y = cy }))
+        table.insert(self.objects, Balloon:new({ x = cx, y = cy - 80 }))
+        table.insert(self.objects, Scissors:new({ x = cx + 120, y = cy }))
+        table.insert(self.objects, require("src.entities.ramp"):new({ x = cx + 240, y = cy + 40, angle = -0.4, length = 180 }))
+
+        self.goal = Goal:new({ x = cx, y = 100, type = "balloon", targetType = "balloon" })
         return
     end
 
