@@ -52,8 +52,19 @@ function Fan:update(dt, objects)
             if dist < r and dist > 0 then
                 local ax = math.cos(self.angle)
                 local ay = math.sin(self.angle)
-                local force = self.forceMagnitude * self.power * (1 - dist/r)
-                body:applyForce(ax * force, ay * force)
+                local strength = self.forceMagnitude * self.power * (1 - dist/r)
+                -- For light, buoyant balloons, add a short impulse so the fan visibly moves them
+                local ud = fixture:getUserData()
+                if ud and ud.type == "balloon" then
+                    -- small impulse scaled by strength
+                    local impulse = strength * 0.02
+                    body:applyLinearImpulse(ax * impulse, ay * impulse)
+                    -- also apply a gentle continuous force for realism
+                    body:applyForce(ax * (strength * 0.2), ay * (strength * 0.2))
+                else
+                    -- apply continuous force to other dynamic bodies
+                    body:applyForce(ax * strength, ay * strength)
+                end
             end
         end
         return true
